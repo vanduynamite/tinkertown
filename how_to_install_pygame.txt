@@ -1,1 +1,5 @@
 https://artificialcognition.wordpress.com/2015/01/04/how-to-install-pygame-on-osx-yosemite-when-theres-an-error-that-pygame-requires-system-python-2-7-to-install/
+
+http://pygame.org/wiki/macintosh -- don't run:
+    install Python3
+
