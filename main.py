@@ -1,19 +1,11 @@
-import pdb
-import numpy
-import random
+from players import *
+from occupations import *
 
-class Player(object):
-    def __init__(self):
-        self.default_replacement_stack = [1,1,1,1,2,2,2,2,3,3,3,3]
-        self.replacement_stack = []
-
-        
-    def hello(self):
-    	print "Hello."
 
 def main():
     player_1 = Player()
-    player_1.hello()
+    player_1.list_resources()
+    print player_1.resources['Jewels']
 
 if __name__ == "__main__":
     main()
