@@ -26,6 +26,7 @@ class Blacksmith(Worker):
 
 class Engineer(Worker):
 	def __init__(self):
+		self.name = 'Engineer'
 		self.starting_resources = {
 		'Jewels': 1,
 		'Widgets': 1,
@@ -33,6 +34,7 @@ class Engineer(Worker):
 
 class Alchemist(Worker):
 	def __init__(self):
+		self.name = 'Alchemist'
 		self.starting_resources = {
 		'Essence': 2,
 		}

@@ -3,8 +3,10 @@ import sys
 
 
 class Player(object):
-    def __init__(self):
+    def __init__(self, name):
     	# start each player off with no resources and a blank set of workers
+
+    	self.name = name
 
         self.resources = {
         'Jewels': 0,
@@ -36,12 +38,14 @@ class Player(object):
         self.add_starting_resources()
 
     def list_resources(self):
+    	print '%s currently has the following resources: ' % self.name
     	for resource in self.resources:
-    		print resource + ': ', self.resources[resource]
+    		print '   ', self.resources[resource], resource 
 
     def list_workers(self):
+    	print '%s currently has the following workers: ' % self.name
     	for worker in self.workers:
-    		print worker.name
+    		print '    A %s' % worker.name
 
     def add_resource(self, resource, amount):
     	self.resources[resource] = self.resources[resource] + amount
