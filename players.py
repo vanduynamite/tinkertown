@@ -1,4 +1,4 @@
-from occupations import *
+from workers import *
 from buildings import *
 
 class Player(object):

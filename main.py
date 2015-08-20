@@ -1,5 +1,5 @@
 from players import *
-from occupations import *
+from workers import *
 from buildings import *
 
 
@@ -15,9 +15,9 @@ def main():
     workshop = Workshop(num_players)
     townhall = TownHall(num_players)
 
-    player_1.workers[0].go_to_bank(player_1,bank)
+    player_1.workers[0].go_to_building(bank, player_1)
 
     player_1.list_resources()
-    bank.list_spots()
+
 if __name__ == "__main__":
     main()

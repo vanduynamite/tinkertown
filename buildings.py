@@ -8,7 +8,7 @@ class Building(object):
 		return self.open_spots > 0
 
 	def list_spots(self):
-		print self.open_spots
+		print '%s has %s open spots' % (self.name, str(self.open_spots))
 
 	def use_spot(self):
 		if self.open_spots >= 1:
