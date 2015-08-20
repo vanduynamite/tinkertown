@@ -1,5 +1,7 @@
 from workers import *
 from buildings import *
+from abilities import *
+from machines import *
 
 class Player(object):
     def __init__(self, name):
@@ -33,29 +35,38 @@ class Player(object):
         for i in range(len(occs)):
         	self.workers.extend([occs[i]() for j in range(qtys[i])])
 
+        # based on the occupations added, get their starting resources
         self.add_starting_resources()
 
+        """Will need to add an 'check_abilities' method or something. Something to look at each occupation and see which abilities this player currently has"""
+
     def list_resources(self):
+        # simply list the resources for this player
     	print '%s currently has the following resources: ' % self.name
     	for resource in self.resources:
     		print '   ', self.resources[resource], resource 
 
     def list_all_workers(self):
+        # list all workers, whether placed or not
     	print '%s currently has the following workers: ' % self.name
     	for worker in self.workers:
     		print '    A %s' % worker.name
 
     def list_available_workers(self):
+        # list only the unplaced workers
         print '%s\'s available workers: ' % self.name
         for worker in self.workers:
             if not(worker.is_placed):
                 print '    %s' % worker.name
 
     def add_resources(self,resource_dictionary):
+        # takes in a dictionary and adds the resources accordingly
+        # it's a dictionary if later more resources are added or removed
         for resource in resource_dictionary:
             self.add_resource(resource, resource_dictionary[resource])
 
     def add_resource(self, resource, amount):
+        # if ever you need to add a single resource of a specific amount
     	self.resources[resource] = self.resources[resource] + amount
 
 

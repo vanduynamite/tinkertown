@@ -1,23 +1,36 @@
+from players import *
+from workers import *
+from abilities import *
+from machines import *
+
 class Building(object):
+	# basic building. Has some spots, has available spots. Has a couple methods.
+
 	def __init__(self):
 		self.name = ''
 		self.available_spots = 0
 		self.open_spots = 0
 
 	def is_available(self):
+		# a check to see if the building is available at all. Should be used by everything that calls this building before it's called.
 		return self.open_spots > 0
 
 	def list_spots(self):
+		# To list, if needed.
 		print '%s has %s open spots' % (self.name, str(self.open_spots))
 
 	def use_spot(self):
+		# Will mark a spot as used. Has a check just in case the method calling it didn't check first.
 		if self.open_spots >= 1:
 			self.open_spots -= 1
+			return True
 		else:
 			print '%s is full! (from Building class)' % self.name
+			return False
 
 class Bank(Building):
 	def __init__(self, players):
+		# Set the name and number of spots by number of players
 		Building.__init__(self)
 		self.name = 'Bank'
 
@@ -35,6 +48,7 @@ class Bank(Building):
 
 class Forge(Building):
 	def __init__(self, players):
+		# Set the name and number of spots by number of players
 		Building.__init__(self)
 		self.name = 'Forge'
 
@@ -51,6 +65,7 @@ class Forge(Building):
 
 class Workshop(Building):
 	def __init__(self, players):
+		# Set the name and number of spots by number of players
 		Building.__init__(self)
 		self.name = 'Workshop'
 
@@ -67,6 +82,7 @@ class Workshop(Building):
 
 class TownHall(Building):
 	def __init__(self, players):
+		# Set the name and number of spots by number of players
 		Building.__init__(self)
 		self.name = 'Town Hall'
 
