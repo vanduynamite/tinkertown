@@ -23,8 +23,14 @@ def main():
     player_1.workers[5].go_to_building(forge, player_1)
 
     player_1.list_resources()
-    
+
     player_1.list_available_workers()
+
+    essence_for_jewels = TradeAbility('Essence',1,'Jewels',1)
+    
+    essence_for_jewels.trade(player_1,3)
+
+    player_1.list_resources()
 
 if __name__ == "__main__":
     main()
