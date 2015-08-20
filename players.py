@@ -1,6 +1,5 @@
 from occupations import *
-import sys
-
+from buildings import *
 
 class Player(object):
     def __init__(self, name):
@@ -26,8 +25,7 @@ class Player(object):
     	for occupation in self.workers:
     		if type(occupation) not in worker_types:
     			worker_types.append(type(occupation))
-	    		for resource in occupation.starting_resources:
-	    			self.add_resource(resource, occupation.starting_resources[resource])
+	    		self.add_resources(occupation.starting_resources)
 
     def add_starting_occupations(self, occs, qtys):
     	# occs is a list of occupations to add, qtys is the corresponding quantities
@@ -42,13 +40,36 @@ class Player(object):
     	for resource in self.resources:
     		print '   ', self.resources[resource], resource 
 
-    def list_workers(self):
+    def list_all_workers(self):
     	print '%s currently has the following workers: ' % self.name
     	for worker in self.workers:
     		print '    A %s' % worker.name
 
+    def list_available_workers(self):
+        print '%s\'s available workers: ' % self.name
+        for worker in self.workers:
+            if not(worker.is_placed):
+                print '    %s' % worker.name
+
+    def add_resources(self,resource_dictionary):
+        for resource in resource_dictionary:
+            self.add_resource(resource, resource_dictionary[resource])
+
     def add_resource(self, resource, amount):
     	self.resources[resource] = self.resources[resource] + amount
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
