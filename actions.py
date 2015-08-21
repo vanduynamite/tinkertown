@@ -46,7 +46,47 @@ class BuildingAction(Action):
 				print ''
 				return False
 
+class TownHallAction(Action):
+	def __init__(self, building, player, starting_player):
+		Action.__init__(self)
 
+		self.name = 'Go to the %s' % building.name
+		self.starting_player = starting_player
+		if self.starting_player:
+			self.name = self.name + ' and take Starting Player!'
+
+		self.building = building
+		self.player = player
+
+	def place_worker(self, worker):
+		#this will...do nothing now because I haven't set up the town hall
+
+		if worker.is_placed:
+			print 'This %s is already used!' % worker.name
+			return False
+
+		else:
+
+			if self.building.is_available():
+
+				worker.is_placed = True
+				self.building.use_spot()
+				"""Give the player a card or something"""
+
+				print '---Action: Visit Building---'
+				print '   %s sent a %s to the %s. (but it does nothing right now)' % (self.player.name, worker.name, self.building.name)
+
+
+				if self.starting_player:
+					print '   %s took Starting Player!' % self.player.name
+					self.player.starting_player = True
+					"""There's nothing here to make the other players' false!!!"""
+					"""Also eventually there should be a choice to take starting player or not. I suppose you don't have to..."""
+
+			else:
+				print 'The %s is full!' % self.building.name
+				print ''
+				return False
 
 """******************"""
 """Triggered actions"""
@@ -123,16 +163,6 @@ class TradeAction(Action):
 
 
 """******************"""
-"""End game actions"""
-"""******************"""
-class EndgameAction(Action):
-	def __init__(self):
-		Action.__init__(self)
-		self.name = 'unknown endgame action'
-
-
-
-"""******************"""
 """Start game actions"""
 """******************"""
 class StartingIncome(Action):
@@ -143,11 +173,17 @@ class StartingIncome(Action):
 		self.resource_transaction = resources
 
 	def start(self, player):
-		print '---Passive Action: Starting Income---'
+		print '---Starting Income---'
 		print '   %s got the %s' % (player.name, self.name)
 		print ''
 		player.add_resources(self.resource_transaction)
 
 
 
-
+"""******************"""
+"""End game actions"""
+"""******************"""
+class EndgameAction(Action):
+	def __init__(self):
+		Action.__init__(self)
+		self.name = 'unknown endgame action'

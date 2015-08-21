@@ -23,7 +23,7 @@ def main():
 
         game.check_actions(player)
         player.list_actions()
-        choose_action = input('Which action? ') - 1
+        choose_action = input('Which action (just choose a place action for now)? ') - 1
         action = player.place_actions[choose_action]
 
         player.list_available_workers()
@@ -32,28 +32,6 @@ def main():
 
         action.place_worker(worker)
 
-        
-
-    # player.list_resources()
-
-    # player_1.list_resources()
-    # player_1.list_available_workers()
-    # player_1.list_actions()
-
-    # player_1.workers[0].go_to_building(bank, player_1)
-    # player_1.workers[1].go_to_building(forge, player_1)
-    # player_1.workers[2].go_to_building(workshop, player_1)
-    # player_1.workers[5].go_to_building(forge, player_1)
-
-    # player_1.list_resources()
-    # player_1.list_available_workers()
-
-    # # this call is now obsolete as the available actions are built into player
-    # essence_for_jewels = TradeAction('Essence',1,'Jewels',1)
-    # essence_for_jewels.trade(player_1,3)
-    # # still, it's a good check
-
-    # player_1.list_resources()
 
 if __name__ == "__main__":
     main()

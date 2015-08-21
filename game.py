@@ -37,7 +37,7 @@ class Game(object):
 		self.buildings['Bank'] = Bank(self.num_players)
 		self.buildings['Forge'] = Forge(self.num_players)
 		self.buildings['Workshop'] = Workshop(self.num_players)
-		self.buildings['Townhall'] = TownHall(self.num_players)
+		self.townhall = TownHall(self.num_players)
 
 
 	def create_market(self):
@@ -65,9 +65,9 @@ class Game(object):
 
 		player.actions = {
 		'Start Game' : player.start_game_actions,
-		'Place Worker' : player.start_game_actions,
-		'Passive Action' : player.start_game_actions,
-		'Triggered Actions' : player.start_game_actions,
+		'Place Worker' : player.place_actions,
+		'Passive Action' : player.passive_actions,
+		'Triggered Actions' : player.trigger_actions,
 		}
 
 		# check the occupations first
@@ -86,9 +86,14 @@ class Game(object):
 			if building.is_available():
 				player.place_actions.append(BuildingAction(building, player))
 
+		if self.townhall.is_empty():
+			player.place_actions.append(TownHallAction(self.townhall, player, True))
+		elif self.townhall.is_available():
+			player.place_actions.append(TownHallAction(self.townhall, player, False))
+
 
 		# and then check the machines
-		"""Not done yet, obviously. Machines don't exist yet!"""
+		"""Not done yet. Machines don't exist yet!"""
 
 	def list_players(self):
 		for player_name in self.players:

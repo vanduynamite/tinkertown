@@ -5,6 +5,7 @@ class Player(object):
 		# start each player off with no resources and a blank set of workers
 
 		self.name = name
+		self.starting_player = False
 
 		self.resources = {
 		'Jewels': 0,
@@ -21,9 +22,9 @@ class Player(object):
 
 		self.actions = {
 		'Start Game' : self.start_game_actions,
-		'Place Worker' : self.start_game_actions,
-		'Passive Action' : self.start_game_actions,
-		'Triggered Actions' : self.start_game_actions,
+		'Place Worker' : self.place_actions,
+		'Passive Action' : self.passive_actions,
+		'Triggered Actions' : self.trigger_actions,
 		}
 
 
@@ -85,7 +86,7 @@ class Player(object):
 
 		print '%s\'s passive actions:' % self.name
 
-		for i in range(len(self.passive_actions)):
-			print '    %s - %s' % (str(i+1), self.passive_actions[i].name)
+		for j in range(len(self.passive_actions)):
+			print '    %s - %s' % (str(i+j+2), self.passive_actions[j].name)
 
 		print ''

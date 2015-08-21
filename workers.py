@@ -19,9 +19,9 @@ class Worker(object):
 
 		self.actions = {
 		'Start Game' : self.start_game_actions,
-		'Place Worker' : self.start_game_actions,
-		'Passive Action' : self.start_game_actions,
-		'Triggered Actions' : self.start_game_actions,
+		'Place Worker' : self.place_actions,
+		'Passive Action' : self.passive_actions,
+		'Triggered Actions' : self.trigger_actions,
 		}
 
 

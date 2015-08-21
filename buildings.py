@@ -93,3 +93,6 @@ class TownHall(Building):
 
 		self.available_spots = spot_list[players]
 		self.open_spots = self.available_spots
+
+	def is_empty(self):
+		return self.available_spots == self.open_spots
