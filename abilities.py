@@ -8,20 +8,20 @@ from machines import *
 class Ability(object):
 	def __init__(self):
 		self.name = 'unknown ability'
+		self.trigger = 'unknown'
 
-class IncomeAbility(Ability):
-	def __init__(self):
-		self.name = 'unknown income ability'
 
-class PassiveAbility(Ability):
-	def __init__(self):
+class StartingIncome(Ability):
+	def __init__(self, occupation, resources):
 		Ability.__init__(self)
-		self.name = 'unknown passive ability'
+		self.name = '%s starting income' % occupation.name
+		self.trigger = 'trigger_start'
 
-class ActiveAbility(Ability):
-	def __init__(self):
-		Ability.__init__(self)
-		self.name = 'unknown active ability'
+		self.resource_transaction = resources
+
+	def start(self, player):
+		player.add_resources(self.resource_transaction)
+		
 
 class TradeAbility(Ability):
 	def __init__(self, resource_in, resource_in_amt, resource_out, resource_out_amt):
@@ -31,6 +31,7 @@ class TradeAbility(Ability):
 
 		Ability.__init__(self)
 		self.name = '%s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
+		self.trigger = 'trigger_trade'
 
 		self.resource_in = resource_in
 		self.resource_out = resource_out
@@ -66,10 +67,28 @@ class TradeAbility(Ability):
 			player.add_resources(resource_transaction)
 
 			# And send confirmation!
-			print '%s traded %s %s for %s %s' % (player.name, str(corrected_amount_in), self.resource_in, str(amount_out), self.resource_out)
+			print '---Trade---'
+			print'   %s traded %s %s for %s %s' % (player.name, str(corrected_amount_in), self.resource_in, str(amount_out), self.resource_out)
+
 
 			return True
 
+class IncomeAbility(Ability):
+	def __init__(self):
+		Ability.__init__(self)
+		self.name = 'unknown income ability'
+
+		"""Do this one next"""
+
+class PassiveAbility(Ability):
+	def __init__(self):
+		Ability.__init__(self)
+		self.name = 'unknown passive ability'
+
+class ActiveAbility(Ability):
+	def __init__(self):
+		Ability.__init__(self)
+		self.name = 'unknown active ability'
 
 class EndgameAbility(Ability):
 	def __init__(self):

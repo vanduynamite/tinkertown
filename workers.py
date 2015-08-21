@@ -13,6 +13,7 @@ class Worker(object):
 		# and of course common methods
 
 		self.is_placed = False
+		self.abilities = []
 
 		
 	def go_to_building(self, building, player):
@@ -29,10 +30,13 @@ class Worker(object):
 				player.add_resources(resources)
 				building.use_spot()
 				self.is_placed = True
+				print '---Visit Building---'
+				print '   %s sent a %s to the %s.' % (player.name, self.name, building.name)
 				return True
 			else:
-				print '%s is full!' % building.name
+				print 'The %s is full!' % building.name
 				return False
+
 
 	def set_building_resources(self, bank_resources, forge_resoures, workshop_resources):
 
@@ -49,10 +53,14 @@ class Financier(Worker):
 		Worker.__init__(self)
 		self.name = 'Financier'
 
-		self.starting_resources = {
+		# Starting income. Store it in an ability, because everything is an ability
+		starting_resources = {
 		'Jewels': 2,
 		}
 
+		self.abilities.append(StartingIncome(self, starting_resources))
+
+		# Building/resource dictionaries
 		bank_resources = {
 		'Jewels' : 2,
 		}
@@ -69,6 +77,11 @@ class Financier(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
+		# Set the Financier's trade abilities
+		self.abilities.append(TradeAbility('Jewels',1,'Gears',1))
+		self.abilities.append(TradeAbility('Jewels',2,'Widgets',1))
+		self.abilities.append(TradeAbility('Jewels',2,'Essence',1))
+
 
 class Blacksmith(Worker):
 	def __init__(self):
@@ -76,13 +89,16 @@ class Blacksmith(Worker):
 		Worker.__init__(self)
 		self.name = 'Blacksmith'
 
-		self.starting_resources = {
+		# Starting income. Store it in an ability, because everything is an ability
+		starting_resources = {
 		'Jewels': 1,
 		'Gears': 3,
-		'Widgets': 0,
-		'Essence': 0,
 		}
 
+		self.abilities.append(StartingIncome(self, starting_resources))
+
+
+		# Building/resource dictionaries
 		bank_resources = {
 		'Jewels' : 1,
 		}
@@ -104,11 +120,16 @@ class Engineer(Worker):
 		Worker.__init__(self)
 		self.name = 'Engineer'
 
-		self.starting_resources = {
+		# Starting income. Store it in an ability, because everything is an ability
+		starting_resources = {
 		'Jewels': 1,
 		'Widgets': 1,
 		}
 
+		self.abilities.append(StartingIncome(self, starting_resources))
+
+
+		# Building/resource dictionaries
 		bank_resources = {
 		'Jewels' : 1,
 		}
@@ -123,16 +144,25 @@ class Engineer(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
+		# Set the Engineer's trade abilities
+		self.abilities.append(TradeAbility('Widgets',1,'Gears',1))
+
+
 class Alchemist(Worker):
 	def __init__(self):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Alchemist'
 
-		self.starting_resources = {
+		# Starting income. Store it in an ability, because everything is an ability
+		starting_resources = {
 		'Essence': 2,
 		}
 
+		self.abilities.append(StartingIncome(self, starting_resources))
+
+
+		# Building/resource dictionaries
 		bank_resources = {
 		'Jewels' : 1,
 		'Essence' : 1,
@@ -149,3 +179,8 @@ class Alchemist(Worker):
 		}
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
+
+		# Set the Alchemist's trade abilities
+		self.abilities.append(TradeAbility('Essence',1,'Jewels',1))
+		self.abilities.append(TradeAbility('Essence',1,'Gears',1))
+		self.abilities.append(TradeAbility('Essence',1,'Widgets',1))
