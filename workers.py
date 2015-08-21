@@ -1,7 +1,6 @@
-from players import *
-from buildings import *
+from game import *
 from actions import *
-from machines import *
+from buildings import *
 
 # All resources (hopefully everywhere?) will be communicated via dictionaries
 # This way the amount of resources doesn't matter. If later a new one is added, no problem
@@ -14,30 +13,6 @@ class Worker(object):
 
 		self.is_placed = False
 		self.actions = []
-
-		
-	def go_to_building(self, building, player):
-		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
-
-		if self.is_placed:
-			print 'This %s is already used!' % self.name
-			return False
-
-		else:
-
-			if building.is_available():
-				resources = self.building_resources[type(building)]
-				player.add_resources(resources)
-				building.use_spot()
-				self.is_placed = True
-				print '---Action: Visit Building---'
-				print '   %s sent a %s to the %s.' % (player.name, self.name, building.name)
-				print ''
-				return True
-			else:
-				print 'The %s is full!' % building.name
-				print ''
-				return False
 
 
 	def set_building_resources(self, bank_resources, forge_resoures, workshop_resources):

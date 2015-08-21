@@ -1,7 +1,4 @@
-from players import *
-from workers import *
-from actions import *
-from machines import *
+from game import *
 
 class Building(object):
 	# basic building. Has some spots, has available spots. Has a couple methods.

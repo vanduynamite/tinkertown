@@ -1,7 +1,4 @@
-from workers import *
-from buildings import *
-from actions import *
-from machines import *
+from game import *
 
 class Player(object):
     def __init__(self, name):
@@ -20,43 +17,12 @@ class Player(object):
         self.actions = []
 
 
-    def check_actions(self):
-        # this method will be called throughout the game to make sure the player has the correct actions
-
-        self.actions = []
-
-        # check the occupations first
-        for worker in self.workers:
-            for worker_action in worker.actions:
-                action_name = worker_action.name
-
-                if action_name not in [action.name for action in self.actions]:
-                    self.actions.append(worker_action)
-
-
-        # then check all the buildings for available spots
-        """Aggh ok this is going to be annoying.
-        We'll need all the buildings to come along with this.
-        Which means I kind of need to build the Game Control module. :("""
-
-
-        # and then check the machines
-        """Not done yet, obviously. Machines don't exist yet!"""
-
 
     def add_starting_occupations(self, occs, qtys):
     	# occs is a list of occupations to add, qtys is the corresponding quantities
 
         for i in range(len(occs)):
         	self.workers.extend([occs[i]() for j in range(qtys[i])])
-
-        # run check_actions as we've just made a change
-        self.check_actions()
-
-        # then based on the occupations added, get their starting resources
-        for action in self.actions:
-            if action.trigger == 'trigger_game_start':
-                action.start(self)
 
 
 
@@ -94,20 +60,23 @@ class Player(object):
     def list_available_workers(self):
         # list only the unplaced workers
         print '%s\'s available workers: ' % self.name
+        
+        i = 1
+        
         for worker in self.workers:
             if not(worker.is_placed):
-                print '    %s' % worker.name
+                print '    %s - %s' % (str(i), worker.name)
+                i += 1
 
         print ''
 
     def list_actions(self):
         # list the actions this player has
-        self.check_actions()
 
         print '%s\'s actions:' % self.name
 
         for action in self.actions:
-            print '    %s (occurs at %s)' % (action.name, action.trigger)
+            print '    %s (occurs on %s)' % (action.name, action.trigger)
 
         print ''
 

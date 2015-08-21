@@ -1,48 +1,65 @@
-from players import *
-from workers import *
-from buildings import *
-from actions import *
-from machines import *
+from game import *
 
 def main():
 
-    # players = {
-    # 'Paul' : [Financier, Alchemist],
-    # 'Isaac' : [Blacksmith, Engineer],
-    # 'Peter' : [Financier, Engineer],
-    # 'David' : [Blacksmith, Alchemist],
-    # }
+    game = Game()
 
-    # game.create_players()
+    players = {
+    1 : [Financier, Alchemist],
+    2 : [Blacksmith, Engineer],
+    3 : [Financier, Engineer],
+    4 : [Blacksmith, Alchemist],
+    }
 
-    player_1 = Player('Paul')
-    player_1.add_starting_occupations([Alchemist, Financier],[4,4])
+    game.set_up_game(players)
 
-    num_players = 4
-    bank = Bank(num_players)
-    forge = Forge(num_players)
-    workshop = Workshop(num_players)
-    townhall = TownHall(num_players)
+    for i in range(10):
+        game.list_players()
 
+        choose_player = input('Choose a player: ')
 
-    player_1.list_resources()
-    player_1.list_available_workers()
-    player_1.list_actions()
+        player = game.players[choose_player]
 
-    player_1.workers[0].go_to_building(bank, player_1)
-    player_1.workers[1].go_to_building(forge, player_1)
-    player_1.workers[2].go_to_building(workshop, player_1)
-    player_1.workers[5].go_to_building(forge, player_1)
+        player.list_available_workers()
 
-    player_1.list_resources()
-    player_1.list_available_workers()
+        choose_worker = input('Worker to place: ')
 
-    # this call is now obsolete as the available actions are built into player
-    essence_for_jewels = TradeAction('Essence',1,'Jewels',1)
-    essence_for_jewels.trade(player_1,3)
-    # still, it's a good check
+        worker = player.workers[choose_worker-1]
 
-    player_1.list_resources()
+        game.list_available_buildings()
+
+        choose_building = input('Building to place on: ')
+
+        building = game.buildings[choose_building]
+
+        player.list_resources()
+        building.list_spots()
+
+        place_worker_on_building(player, worker, building)
+
+        player.list_resources()
+        building.list_spots()
+
+    # player.list_resources()
+
+    # player_1.list_resources()
+    # player_1.list_available_workers()
+    # player_1.list_actions()
+
+    # player_1.workers[0].go_to_building(bank, player_1)
+    # player_1.workers[1].go_to_building(forge, player_1)
+    # player_1.workers[2].go_to_building(workshop, player_1)
+    # player_1.workers[5].go_to_building(forge, player_1)
+
+    # player_1.list_resources()
+    # player_1.list_available_workers()
+
+    # # this call is now obsolete as the available actions are built into player
+    # essence_for_jewels = TradeAction('Essence',1,'Jewels',1)
+    # essence_for_jewels.trade(player_1,3)
+    # # still, it's a good check
+
+    # player_1.list_resources()
 
 if __name__ == "__main__":
     main()
