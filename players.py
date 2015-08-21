@@ -61,12 +61,12 @@ class Player(object):
         # list only the unplaced workers
         print '%s\'s available workers: ' % self.name
         
-        i = 1
+        i = 0
         
         for worker in self.workers:
+            i += 1
             if not(worker.is_placed):
                 print '    %s - %s' % (str(i), worker.name)
-                i += 1
 
         print ''
 
@@ -75,8 +75,10 @@ class Player(object):
 
         print '%s\'s actions:' % self.name
 
-        for action in self.actions:
-            print '    %s (occurs on %s)' % (action.name, action.trigger)
+        for i in range(len(self.actions)):
+
+            if self.actions[i].trigger != 'trigger_game_start':
+                print '    %s - %s' % (str(i+1), self.actions[i].name)
 
         print ''
 

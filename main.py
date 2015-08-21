@@ -13,32 +13,24 @@ def main():
 
     game.set_up_game(players)
 
-    for i in range(10):
+    for i in range(5):
         game.list_players()
 
-        choose_player = input('Choose a player: ')
-
+        choose_player = input('Which player? ')
         player = game.players[choose_player]
 
+        game.check_actions(player,['trigger_game_start','trigger_trade'])
+        player.list_actions()
+        choose_action = input('Which action? ') - 1
+        action = player.actions[choose_action]
+
         player.list_available_workers()
+        choose_worker = input('Worker to place? ')
+        worker = player.workers[choose_worker - 1]
 
-        choose_worker = input('Worker to place: ')
+        action.place_worker(worker)
 
-        worker = player.workers[choose_worker-1]
-
-        game.list_available_buildings()
-
-        choose_building = input('Building to place on: ')
-
-        building = game.buildings[choose_building]
-
-        player.list_resources()
-        building.list_spots()
-
-        place_worker_on_building(player, worker, building)
-
-        player.list_resources()
-        building.list_spots()
+        
 
     # player.list_resources()
 

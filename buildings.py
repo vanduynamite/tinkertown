@@ -34,7 +34,7 @@ class Bank(Building):
 		spot_list = {
 		2 : 3,
 		3 : 5,
-		4 : 6,
+		4 : 4,
 		5 : 7,
 		6 : 8,
 		}

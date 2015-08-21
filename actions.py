@@ -75,34 +75,35 @@ class TradeAction(Action):
 			return True
 
 class BuildingAction(Action):
-	def __init__(self, building):
+	def __init__(self, building, player):
 		Action.__init__(self)
-		self.name = 'Go to the %s' % building
-
+		self.name = 'Go to the %s' % building.name
+		self.building = building
+		self.player = player
 		self.trigger = 'placement'
 
-def place_worker_on_building(player, worker, building):
-	#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
+	def place_worker(self, worker):
+		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
 
-	if worker.is_placed:
-		print 'This %s is already used!' % worker.name
-		return False
-
-	else:
-
-		if building.is_available():
-			resources = worker.building_resources[type(building)]
-			player.add_resources(resources)
-			building.use_spot()
-			worker.is_placed = True
-			print '---Action: Visit Building---'
-			print '   %s sent a %s to the %s.' % (player.name, worker.name, building.name)
-			print ''
-			return True
-		else:
-			print 'The %s is full!' % building.name
-			print ''
+		if worker.is_placed:
+			print 'This %s is already used!' % worker.name
 			return False
+
+		else:
+
+			if self.building.is_available():
+				resources = worker.building_resources[type(self.building)]
+				self.player.add_resources(resources)
+				self.building.use_spot()
+				worker.is_placed = True
+				print '---Action: Visit Building---'
+				print '   %s sent a %s to the %s.' % (self.player.name, worker.name, self.building.name)
+				print ''
+				return True
+			else:
+				print 'The %s is full!' % self.building.name
+				print ''
+				return False
 
 
 class IncomeAction(Action):

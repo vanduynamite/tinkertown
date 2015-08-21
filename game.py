@@ -24,12 +24,14 @@ class Game(object):
 
 			player.add_starting_occupations(occupations,[self.workers_per_occupation for i in occupations])
 
-			self.check_actions(player)
+			self.check_actions(player,[])
 
 			# based on the occupations added, get their starting resources
 			for action in player.actions:
 				if action.trigger == 'trigger_game_start':
 					action.start(player)
+
+			self.check_actions(player,['trigger_game_start'])
 
 
 	def create_buildings(self):
@@ -54,7 +56,7 @@ class Game(object):
 
 		self.create_players(players)
 
-	def check_actions(self, player):
+	def check_actions(self, player, past_triggers):
 		# this method will be called throughout the game to make sure the player has the correct actions
 
 		player.actions = []
@@ -65,13 +67,16 @@ class Game(object):
 				action_name = worker_action.name
 
 				if action_name not in [action.name for action in player.actions]:
-					player.actions.append(worker_action)
+					
+					if worker_action.trigger not in past_triggers:
+
+						player.actions.append(worker_action)
 
 
 		# then check all the buildings for available spots
 		for name, building in self.buildings.items():
-			if building.is_available:
-				player.actions.append(BuildingAction(name))
+			if building.is_available():
+				player.actions.append(BuildingAction(building, player))
 
 
 		# and then check the machines
