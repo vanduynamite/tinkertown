@@ -7,20 +7,67 @@ class Action(object):
 		self.trigger = 'unknown'
 
 
-class StartingIncome(Action):
-	def __init__(self, occupation, resources):
+
+"""******************"""
+"""Place worker actions"""
+"""******************"""
+class ActiveAction(Action):
+	def __init__(self):
 		Action.__init__(self)
-		self.name = '%s\'s starting income' % occupation.name
-		self.trigger = 'trigger_game_start'
+		self.name = 'unknown active action'
 
-		self.resource_transaction = resources
+class BuildingAction(Action):
+	def __init__(self, building, player):
+		Action.__init__(self)
+		self.name = 'Go to the %s' % building.name
+		self.building = building
+		self.player = player
 
-	def start(self, player):
-		print '---Passive Action: Starting Income---'
-		print '   %s got the %s' % (player.name, self.name)
-		print ''
-		player.add_resources(self.resource_transaction)
+	def place_worker(self, worker):
+		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
 
+		if worker.is_placed:
+			print 'This %s is already used!' % worker.name
+			return False
+
+		else:
+
+			if self.building.is_available():
+				resources = worker.building_resources[type(self.building)]
+				self.player.add_resources(resources)
+				self.building.use_spot()
+				worker.is_placed = True
+				print '---Action: Visit Building---'
+				print '   %s sent a %s to the %s.' % (self.player.name, worker.name, self.building.name)
+				print ''
+				return True
+			else:
+				print 'The %s is full!' % self.building.name
+				print ''
+				return False
+
+
+
+"""******************"""
+"""Triggered actions"""
+"""******************"""
+class IncomeAction(Action):
+	def __init__(self):
+		Action.__init__(self)
+		self.name = 'unknown income action'
+		self.trigger = 'round_start'
+
+		"""Do this one next"""
+
+
+
+"""******************"""
+"""Passive actions"""
+"""******************"""
+class PassiveAction(Action):
+	def __init__(self):
+		Action.__init__(self)
+		self.name = 'unknown passive action'
 
 class TradeAction(Action):
 	def __init__(self, resource_in, resource_in_amt, resource_out, resource_out_amt):
@@ -30,7 +77,6 @@ class TradeAction(Action):
 
 		Action.__init__(self)
 		self.name = '%s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
-		self.trigger = 'trigger_trade'
 
 		self.resource_in = resource_in
 		self.resource_out = resource_out
@@ -74,59 +120,34 @@ class TradeAction(Action):
 
 			return True
 
-class BuildingAction(Action):
-	def __init__(self, building, player):
-		Action.__init__(self)
-		self.name = 'Go to the %s' % building.name
-		self.building = building
-		self.player = player
-		self.trigger = 'placement'
-
-	def place_worker(self, worker):
-		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
-
-		if worker.is_placed:
-			print 'This %s is already used!' % worker.name
-			return False
-
-		else:
-
-			if self.building.is_available():
-				resources = worker.building_resources[type(self.building)]
-				self.player.add_resources(resources)
-				self.building.use_spot()
-				worker.is_placed = True
-				print '---Action: Visit Building---'
-				print '   %s sent a %s to the %s.' % (self.player.name, worker.name, self.building.name)
-				print ''
-				return True
-			else:
-				print 'The %s is full!' % self.building.name
-				print ''
-				return False
 
 
-class IncomeAction(Action):
-	def __init__(self):
-		Action.__init__(self)
-		self.name = 'unknown income action'
-		self.trigger = 'trigger_round_start'
-
-		"""Do this one next"""
-
-class PassiveAction(Action):
-	def __init__(self):
-		Action.__init__(self)
-		self.name = 'unknown passive action'
-
-class ActiveAction(Action):
-	def __init__(self):
-		Action.__init__(self)
-		self.name = 'unknown active action'
-
+"""******************"""
+"""End game actions"""
+"""******************"""
 class EndgameAction(Action):
 	def __init__(self):
 		Action.__init__(self)
 		self.name = 'unknown endgame action'
+
+
+
+"""******************"""
+"""Start game actions"""
+"""******************"""
+class StartingIncome(Action):
+	def __init__(self, occupation, resources):
+		Action.__init__(self)
+		self.name = '%s\'s starting income' % occupation.name
+
+		self.resource_transaction = resources
+
+	def start(self, player):
+		print '---Passive Action: Starting Income---'
+		print '   %s got the %s' % (player.name, self.name)
+		print ''
+		player.add_resources(self.resource_transaction)
+
+
 
 

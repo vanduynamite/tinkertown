@@ -24,14 +24,13 @@ class Game(object):
 
 			player.add_starting_occupations(occupations,[self.workers_per_occupation for i in occupations])
 
-			self.check_actions(player,[])
+			self.check_actions(player)
 
 			# based on the occupations added, get their starting resources
-			for action in player.actions:
-				if action.trigger == 'trigger_game_start':
-					action.start(player)
+			for action in player.start_game_actions:
+				action.start(player)
 
-			self.check_actions(player,['trigger_game_start'])
+			self.check_actions(player)
 
 
 	def create_buildings(self):
@@ -56,27 +55,36 @@ class Game(object):
 
 		self.create_players(players)
 
-	def check_actions(self, player, past_triggers):
+	def check_actions(self, player):
 		# this method will be called throughout the game to make sure the player has the correct actions
 
-		player.actions = []
+		player.start_game_actions = []
+		player.place_actions = []
+		player.passive_actions = []
+		player.trigger_actions = []
+
+		player.actions = {
+		'Start Game' : player.start_game_actions,
+		'Place Worker' : player.start_game_actions,
+		'Passive Action' : player.start_game_actions,
+		'Triggered Actions' : player.start_game_actions,
+		}
 
 		# check the occupations first
 		for worker in player.workers:
-			for worker_action in worker.actions:
-				action_name = worker_action.name
+			for action_type, player_action_set in player.actions.items():
+				for worker_action in worker.actions[action_type]:
 
-				if action_name not in [action.name for action in player.actions]:
-					
-					if worker_action.trigger not in past_triggers:
+					action_name = worker_action.name
 
-						player.actions.append(worker_action)
+					if action_name not in [action.name for action in player_action_set]:
+							player_action_set.append(worker_action)
 
 
 		# then check all the buildings for available spots
 		for name, building in self.buildings.items():
 			if building.is_available():
-				player.actions.append(BuildingAction(building, player))
+				player.place_actions.append(BuildingAction(building, player))
 
 
 		# and then check the machines
@@ -90,8 +98,3 @@ class Game(object):
 		for name, building in self.buildings.items():
 			if building.is_available():
 				print '    The %s is available' % name
-
-
-
-
-
