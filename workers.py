@@ -30,11 +30,13 @@ class Worker(object):
 				player.add_resources(resources)
 				building.use_spot()
 				self.is_placed = True
-				print '---Visit Building---'
+				print '---Action: Visit Building---'
 				print '   %s sent a %s to the %s.' % (player.name, self.name, building.name)
+				print ''
 				return True
 			else:
 				print 'The %s is full!' % building.name
+				print ''
 				return False
 
 

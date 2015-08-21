@@ -25,7 +25,7 @@ class Player(object):
 
         self.abilities = []
 
-        # check the occupations first
+        # # check the occupations first
         for worker in self.workers:
             for worker_ability in worker.abilities:
                 ability_name = worker_ability.name
@@ -48,7 +48,7 @@ class Player(object):
 
         # then based on the occupations added, get their starting resources
         for ability in self.abilities:
-            if ability.trigger == 'trigger_start':
+            if ability.trigger == 'trigger_game_start':
                 ability.start(self)
 
 

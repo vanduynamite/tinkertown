@@ -14,14 +14,17 @@ class Ability(object):
 class StartingIncome(Ability):
 	def __init__(self, occupation, resources):
 		Ability.__init__(self)
-		self.name = '%s starting income' % occupation.name
-		self.trigger = 'trigger_start'
+		self.name = '%s\'s starting income' % occupation.name
+		self.trigger = 'trigger_game_start'
 
 		self.resource_transaction = resources
 
 	def start(self, player):
+		print '---Ability: Starting Income---'
+		print '   %s got the %s' % (player.name, self.name)
+		print ''
 		player.add_resources(self.resource_transaction)
-		
+
 
 class TradeAbility(Ability):
 	def __init__(self, resource_in, resource_in_amt, resource_out, resource_out_amt):
@@ -50,6 +53,7 @@ class TradeAbility(Ability):
 			# If not, delived the bad news
 			print '%s does not have enough %s!' % (player.name, self.resource_in),
 			print '(requested: %s, available: %s)' % (str(amount_in), str(amount_available))
+			print ''
 			return False
 		else:
 			# Get a corrected amount in case they want to trade some incorrect ratio
@@ -67,8 +71,9 @@ class TradeAbility(Ability):
 			player.add_resources(resource_transaction)
 
 			# And send confirmation!
-			print '---Trade---'
-			print'   %s traded %s %s for %s %s' % (player.name, str(corrected_amount_in), self.resource_in, str(amount_out), self.resource_out)
+			print '---Ability: Trade---'
+			print '   %s traded %s %s for %s %s' % (player.name, str(corrected_amount_in), self.resource_in, str(amount_out), self.resource_out)
+			print ''
 
 
 			return True
@@ -77,6 +82,7 @@ class IncomeAbility(Ability):
 	def __init__(self):
 		Ability.__init__(self)
 		self.name = 'unknown income ability'
+		self.trigger = 'trigger_round_start'
 
 		"""Do this one next"""
 
