@@ -1,6 +1,6 @@
 from players import *
 from buildings import *
-from abilities import *
+from actions import *
 from machines import *
 
 # All resources (hopefully everywhere?) will be communicated via dictionaries
@@ -13,7 +13,7 @@ class Worker(object):
 		# and of course common methods
 
 		self.is_placed = False
-		self.abilities = []
+		self.actions = []
 
 		
 	def go_to_building(self, building, player):
@@ -55,12 +55,12 @@ class Financier(Worker):
 		Worker.__init__(self)
 		self.name = 'Financier'
 
-		# Starting income. Store it in an ability, because everything is an ability
+		# Starting income. Store it in an action, because everything is an action
 		starting_resources = {
 		'Jewels': 2,
 		}
 
-		self.abilities.append(StartingIncome(self, starting_resources))
+		self.actions.append(StartingIncome(self, starting_resources))
 
 		# Building/resource dictionaries
 		bank_resources = {
@@ -79,10 +79,10 @@ class Financier(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
-		# Set the Financier's trade abilities
-		self.abilities.append(TradeAbility('Jewels',1,'Gears',1))
-		self.abilities.append(TradeAbility('Jewels',2,'Widgets',1))
-		self.abilities.append(TradeAbility('Jewels',2,'Essence',1))
+		# Set the Financier's trade actions
+		self.actions.append(TradeAction('Jewels',1,'Gears',1))
+		self.actions.append(TradeAction('Jewels',2,'Widgets',1))
+		self.actions.append(TradeAction('Jewels',2,'Essence',1))
 
 
 class Blacksmith(Worker):
@@ -91,13 +91,13 @@ class Blacksmith(Worker):
 		Worker.__init__(self)
 		self.name = 'Blacksmith'
 
-		# Starting income. Store it in an ability, because everything is an ability
+		# Starting income. Store it in an action, because everything is an action
 		starting_resources = {
 		'Jewels': 1,
 		'Gears': 3,
 		}
 
-		self.abilities.append(StartingIncome(self, starting_resources))
+		self.actions.append(StartingIncome(self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -122,13 +122,13 @@ class Engineer(Worker):
 		Worker.__init__(self)
 		self.name = 'Engineer'
 
-		# Starting income. Store it in an ability, because everything is an ability
+		# Starting income. Store it in an action, because everything is an action
 		starting_resources = {
 		'Jewels': 1,
 		'Widgets': 1,
 		}
 
-		self.abilities.append(StartingIncome(self, starting_resources))
+		self.actions.append(StartingIncome(self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -146,8 +146,8 @@ class Engineer(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
-		# Set the Engineer's trade abilities
-		self.abilities.append(TradeAbility('Widgets',1,'Gears',1))
+		# Set the Engineer's trade actions
+		self.actions.append(TradeAction('Widgets',1,'Gears',1))
 
 
 class Alchemist(Worker):
@@ -156,12 +156,12 @@ class Alchemist(Worker):
 		Worker.__init__(self)
 		self.name = 'Alchemist'
 
-		# Starting income. Store it in an ability, because everything is an ability
+		# Starting income. Store it in an action, because everything is an action
 		starting_resources = {
 		'Essence': 2,
 		}
 
-		self.abilities.append(StartingIncome(self, starting_resources))
+		self.actions.append(StartingIncome(self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -182,7 +182,7 @@ class Alchemist(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
-		# Set the Alchemist's trade abilities
-		self.abilities.append(TradeAbility('Essence',1,'Jewels',1))
-		self.abilities.append(TradeAbility('Essence',1,'Gears',1))
-		self.abilities.append(TradeAbility('Essence',1,'Widgets',1))
+		# Set the Alchemist's trade actions
+		self.actions.append(TradeAction('Essence',1,'Jewels',1))
+		self.actions.append(TradeAction('Essence',1,'Gears',1))
+		self.actions.append(TradeAction('Essence',1,'Widgets',1))

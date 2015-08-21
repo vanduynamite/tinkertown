@@ -1,6 +1,6 @@
 from players import *
 from workers import *
-from abilities import *
+from actions import *
 from machines import *
 
 class Building(object):

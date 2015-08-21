@@ -1,6 +1,6 @@
 from workers import *
 from buildings import *
-from abilities import *
+from actions import *
 from machines import *
 
 class Player(object):
@@ -17,25 +17,32 @@ class Player(object):
         }
 
         self.workers = []
-        self.abilities = []
+        self.actions = []
 
 
-    def check_abilities(self):
-        # this method will be called throughout the game to make sure the player has the correct abilities
+    def check_actions(self):
+        # this method will be called throughout the game to make sure the player has the correct actions
 
-        self.abilities = []
+        self.actions = []
 
-        # # check the occupations first
+        # check the occupations first
         for worker in self.workers:
-            for worker_ability in worker.abilities:
-                ability_name = worker_ability.name
+            for worker_action in worker.actions:
+                action_name = worker_action.name
 
-                if ability_name not in [ability.name for ability in self.abilities]:
-                    self.abilities.append(worker_ability)
+                if action_name not in [action.name for action in self.actions]:
+                    self.actions.append(worker_action)
+
+
+        # then check all the buildings for available spots
+        """Aggh ok this is going to be annoying.
+        We'll need all the buildings to come along with this.
+        Which means I kind of need to build the Game Control module. :("""
 
 
         # and then check the machines
         """Not done yet, obviously. Machines don't exist yet!"""
+
 
     def add_starting_occupations(self, occs, qtys):
     	# occs is a list of occupations to add, qtys is the corresponding quantities
@@ -43,13 +50,13 @@ class Player(object):
         for i in range(len(occs)):
         	self.workers.extend([occs[i]() for j in range(qtys[i])])
 
-        # run check_abilities as we've just made a change
-        self.check_abilities()
+        # run check_actions as we've just made a change
+        self.check_actions()
 
         # then based on the occupations added, get their starting resources
-        for ability in self.abilities:
-            if ability.trigger == 'trigger_game_start':
-                ability.start(self)
+        for action in self.actions:
+            if action.trigger == 'trigger_game_start':
+                action.start(self)
 
 
 
@@ -93,14 +100,14 @@ class Player(object):
 
         print ''
 
-    def list_abilities(self):
-        # list the abilities this player has
-        self.check_abilities()
+    def list_actions(self):
+        # list the actions this player has
+        self.check_actions()
 
-        print '%s\'s abilities:' % self.name
+        print '%s\'s actions:' % self.name
 
-        for ability in self.abilities:
-            print '    %s (occurs at %s)' % (ability.name, ability.trigger)
+        for action in self.actions:
+            print '    %s (occurs at %s)' % (action.name, action.trigger)
 
         print ''
 

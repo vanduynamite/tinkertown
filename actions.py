@@ -3,36 +3,35 @@ from workers import *
 from buildings import *
 from machines import *
 
-"""Will have all sorts of different abilities in here to reference! That way each ability can be modified independently of the rest of the program. I mean, that's the reason for all of this, right..."""
 
-class Ability(object):
+class Action(object):
 	def __init__(self):
-		self.name = 'unknown ability'
+		self.name = 'unknown action'
 		self.trigger = 'unknown'
 
 
-class StartingIncome(Ability):
+class StartingIncome(Action):
 	def __init__(self, occupation, resources):
-		Ability.__init__(self)
+		Action.__init__(self)
 		self.name = '%s\'s starting income' % occupation.name
 		self.trigger = 'trigger_game_start'
 
 		self.resource_transaction = resources
 
 	def start(self, player):
-		print '---Ability: Starting Income---'
+		print '---Passive Action: Starting Income---'
 		print '   %s got the %s' % (player.name, self.name)
 		print ''
 		player.add_resources(self.resource_transaction)
 
 
-class TradeAbility(Ability):
+class TradeAction(Action):
 	def __init__(self, resource_in, resource_in_amt, resource_out, resource_out_amt):
 		# Generic trade transaction
 		# Specify which resource comes in and how many you need
 		# and specify what and how much comes out!
 
-		Ability.__init__(self)
+		Action.__init__(self)
 		self.name = '%s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
 		self.trigger = 'trigger_trade'
 
@@ -71,34 +70,34 @@ class TradeAbility(Ability):
 			player.add_resources(resource_transaction)
 
 			# And send confirmation!
-			print '---Ability: Trade---'
+			print '---Passive Action: Trade---'
 			print '   %s traded %s %s for %s %s' % (player.name, str(corrected_amount_in), self.resource_in, str(amount_out), self.resource_out)
 			print ''
 
 
 			return True
 
-class IncomeAbility(Ability):
+class IncomeAction(Action):
 	def __init__(self):
-		Ability.__init__(self)
-		self.name = 'unknown income ability'
+		Action.__init__(self)
+		self.name = 'unknown income action'
 		self.trigger = 'trigger_round_start'
 
 		"""Do this one next"""
 
-class PassiveAbility(Ability):
+class PassiveAction(Action):
 	def __init__(self):
-		Ability.__init__(self)
-		self.name = 'unknown passive ability'
+		Action.__init__(self)
+		self.name = 'unknown passive action'
 
-class ActiveAbility(Ability):
+class ActiveAction(Action):
 	def __init__(self):
-		Ability.__init__(self)
-		self.name = 'unknown active ability'
+		Action.__init__(self)
+		self.name = 'unknown active action'
 
-class EndgameAbility(Ability):
+class EndgameAction(Action):
 	def __init__(self):
-		Ability.__init__(self)
-		self.name = 'unknown endgame ability'
+		Action.__init__(self)
+		self.name = 'unknown endgame action'
 
 
