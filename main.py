@@ -13,7 +13,7 @@ def main():
 
     game.set_up_game(players)
 
-    """This should be a do until every player has gone, or passed. So in Game there should be a check for all players, and in players there should be a default action to pass, and a tag for it as well"""
+    """This should be a method in Game. It's fine here for now for testing. So in Game there should be a check for all players, and in players there should be a default action to pass, and a tag for it as well"""
 
     for i in range(9):
         game.list_players()

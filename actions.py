@@ -88,6 +88,8 @@ class TownHallAction(Action):
 				print ''
 				return False
 
+
+
 """******************"""
 """Triggered actions"""
 """******************"""
