@@ -36,7 +36,7 @@ class Player(object):
 		# occs is a list of occupations to add, qtys is the corresponding quantities
 
 		for i in range(len(occs)):
-			self.workers.extend([occs[i]() for j in range(qtys[i])])
+			self.workers.extend([occs[i](self) for j in range(qtys[i])])
 
 	def add_resources(self,resource_dictionary):
 		# takes in a dictionary and adds the resources accordingly

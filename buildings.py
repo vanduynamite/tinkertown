@@ -28,6 +28,7 @@ class Building(object):
 	def reset_building(self):
 		self.open_spots = self.available_spots
 
+
 class Bank(Building):
 	def __init__(self, players):
 		# Set the name and number of spots by number of players
@@ -85,6 +86,7 @@ class TownHall(Building):
 		# Set the name and number of spots by number of players
 		Building.__init__(self)
 		self.name = 'Town Hall'
+		self.starting_player_available = True
 
 		spot_list = {
 		2 : 4,
@@ -98,4 +100,7 @@ class TownHall(Building):
 		self.open_spots = self.available_spots
 
 	def is_empty(self):
-		return self.available_spots == self.open_spots
+		if self.available_spots == self.open_spots:
+			self.starting_player_available = True
+
+		return self.starting_player_available

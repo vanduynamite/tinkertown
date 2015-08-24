@@ -1,10 +1,12 @@
 from game import *
+from inputs import *
 
 
 class Action(object):
-	def __init__(self):
+	def __init__(self,player):
 		self.name = 'unknown action'
 		self.trigger = 'unknown'
+		self.player = player
 
 
 
@@ -16,15 +18,19 @@ class ActiveAction(Action):
 		Action.__init__(self)
 		self.name = 'unknown active action'
 
+	def execute(self):
+		return True
+
 class BuildingAction(Action):
 	def __init__(self, building, player):
-		Action.__init__(self)
+		Action.__init__(self, player)
 		self.name = 'Go to the %s' % building.name
 		self.building = building
-		self.player = player
 
-	def place_worker(self, worker):
+	def execute(self):
 		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
+
+		worker = GetWorker(self.player)
 
 		if worker.is_placed:
 			print 'This %s is already used!' % worker.name
@@ -47,22 +53,23 @@ class BuildingAction(Action):
 				return False
 
 class TownHallAction(Action):
-	def __init__(self, building, player, starting_player):
-		Action.__init__(self)
+	def __init__(self, building, player, starting_player_available):
+		Action.__init__(self, player)
 
 		self.name = 'Go to the %s' % building.name
-		self.starting_player = starting_player
+		self.starting_player_available = starting_player_available
 		
 		"""This doesn't seem to be working right now"""
 
-		if self.starting_player:
+		if self.starting_player_available:
 			self.name = self.name + ' and take Starting Player!'
 
 		self.building = building
-		self.player = player
 
-	def place_worker(self, worker):
+	def execute(self):
 		#this will...do nothing now because I haven't set up the town hall
+
+		worker = GetWorker(self.player)
 
 		if worker.is_placed:
 			print 'This %s is already used!' % worker.name
@@ -80,11 +87,16 @@ class TownHallAction(Action):
 				print '   %s sent a %s to the %s. (but it does nothing right now)' % (self.player.name, worker.name, self.building.name)
 
 
-				if self.starting_player:
-					print '   %s took Starting Player!' % self.player.name
-					self.player.starting_player = True
-					"""There's nothing here to make the other players' false!!!"""
-					"""Also eventually there should be a choice to take starting player or not. I suppose you don't have to..."""
+				if self.starting_player_available:
+					if take_starting_player():
+						print '   %s took Starting Player!' % self.player.name
+						self.player.starting_player = True
+						self.building.starting_player_available = False
+						# The logic for switching starting player is in game.py
+
+				print ''
+
+				return True
 
 			else:
 				print 'The %s is full!' % self.building.name
@@ -93,12 +105,15 @@ class TownHallAction(Action):
 
 class PlayerPass(Action):
 	def __init__(self, player):
-		Action.__init__(self)
-		self.player = player
+		Action.__init__(self, player)
 		self.name = 'Pass this turn'
 
-	def player_pass(self):
+	def execute(self):
 		self.player.has_passed = True
+		print '---Inaction: Pass---'
+		print '   %s passed their turn.' % self.player.name
+		print '' 
+		return True
 
 
 """******************"""
@@ -112,6 +127,9 @@ class IncomeAction(Action):
 
 		"""Do this one next"""
 
+	def execute(self):
+		return True
+
 
 
 """******************"""
@@ -122,13 +140,16 @@ class PassiveAction(Action):
 		Action.__init__(self)
 		self.name = 'unknown passive action'
 
+	def execute(self):
+		return False
+
 class TradeAction(Action):
-	def __init__(self, resource_in, resource_in_amt, resource_out, resource_out_amt):
+	def __init__(self, player, resource_in, resource_in_amt, resource_out, resource_out_amt):
 		# Generic trade transaction
 		# Specify which resource comes in and how many you need
 		# and specify what and how much comes out!
+		Action.__init__(self, player)
 
-		Action.__init__(self)
 		self.name = 'Trade %s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
 
 		self.resource_in = resource_in
@@ -140,7 +161,12 @@ class TradeAction(Action):
 		resource_out : resource_out_amt,
 		}
 
-	def trade(self, player, amount_in):
+	def execute(self):
+		
+		player = self.player
+
+		amount_in = GetTradeAmount(player, self.resource_in)
+
 		# First check the amount available to make sure they're not asking for too much
 		amount_available = player.resources[self.resource_in]
 
@@ -149,7 +175,6 @@ class TradeAction(Action):
 			print '%s does not have enough %s!' % (player.name, self.resource_in),
 			print '(requested: %s, available: %s)' % (str(amount_in), str(amount_available))
 			print ''
-			return False
 		else:
 			# Get a corrected amount in case they want to trade some incorrect ratio
 			corrected_amount_in = int(amount_in/self.transaction[self.resource_in])*self.transaction[self.resource_in]
@@ -171,7 +196,7 @@ class TradeAction(Action):
 			print ''
 
 
-			return True
+		return False
 
 
 
@@ -179,17 +204,17 @@ class TradeAction(Action):
 """Start game actions"""
 """******************"""
 class StartingIncome(Action):
-	def __init__(self, occupation, resources):
-		Action.__init__(self)
+	def __init__(self, player, occupation, resources):
+		Action.__init__(self, player)
 		self.name = '%s\'s starting income' % occupation.name
 
 		self.resource_transaction = resources
 
-	def start(self, player):
+	def execute(self):
 		print '---Starting Income---'
-		print '   %s got the %s' % (player.name, self.name)
+		print '   %s got the %s' % (self.player.name, self.name)
 		print ''
-		player.add_resources(self.resource_transaction)
+		self.player.add_resources(self.resource_transaction)
 
 
 
@@ -197,6 +222,9 @@ class StartingIncome(Action):
 """End game actions"""
 """******************"""
 class EndgameAction(Action):
-	def __init__(self):
-		Action.__init__(self)
+	def __init__(self, player):
+		Action.__init__(self, player)
 		self.name = 'unknown endgame action'
+
+	def execute(self):
+		pass

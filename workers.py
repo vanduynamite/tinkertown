@@ -35,7 +35,7 @@ class Worker(object):
 
 
 class Financier(Worker):
-	def __init__(self):
+	def __init__(self, player):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Financier'
@@ -45,7 +45,7 @@ class Financier(Worker):
 		'Jewels': 2,
 		}
 
-		self.start_game_actions.append(StartingIncome(self, starting_resources))
+		self.start_game_actions.append(StartingIncome(player, self, starting_resources))
 
 		# Building/resource dictionaries
 		bank_resources = {
@@ -65,13 +65,13 @@ class Financier(Worker):
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
 		# Set the Financier's trade actions
-		self.passive_actions.append(TradeAction('Jewels',1,'Gears',1))
-		self.passive_actions.append(TradeAction('Jewels',2,'Widgets',1))
-		self.passive_actions.append(TradeAction('Jewels',2,'Essence',1))
+		self.passive_actions.append(TradeAction(player, 'Jewels',1,'Gears',1))
+		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Widgets',1))
+		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Essence',1))
 
 
 class Blacksmith(Worker):
-	def __init__(self):
+	def __init__(self, player):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Blacksmith'
@@ -82,7 +82,7 @@ class Blacksmith(Worker):
 		'Gears': 3,
 		}
 
-		self.start_game_actions.append(StartingIncome(self, starting_resources))
+		self.start_game_actions.append(StartingIncome(player, self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -102,7 +102,7 @@ class Blacksmith(Worker):
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
 class Engineer(Worker):
-	def __init__(self):
+	def __init__(self, player):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Engineer'
@@ -113,7 +113,7 @@ class Engineer(Worker):
 		'Widgets': 1,
 		}
 
-		self.start_game_actions.append(StartingIncome(self, starting_resources))
+		self.start_game_actions.append(StartingIncome(player, self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -132,11 +132,11 @@ class Engineer(Worker):
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
 		# Set the Engineer's trade actions
-		self.passive_actions.append(TradeAction('Widgets',1,'Gears',1))
+		self.passive_actions.append(TradeAction(player, 'Widgets',1,'Gears',1))
 
 
 class Alchemist(Worker):
-	def __init__(self):
+	def __init__(self, player):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Alchemist'
@@ -146,7 +146,7 @@ class Alchemist(Worker):
 		'Essence': 2,
 		}
 
-		self.start_game_actions.append(StartingIncome(self, starting_resources))
+		self.start_game_actions.append(StartingIncome(player, self, starting_resources))
 
 
 		# Building/resource dictionaries
@@ -168,6 +168,6 @@ class Alchemist(Worker):
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
 		# Set the Alchemist's trade actions
-		self.passive_actions.append(TradeAction('Essence',1,'Jewels',1))
-		self.passive_actions.append(TradeAction('Essence',1,'Gears',1))
-		self.passive_actions.append(TradeAction('Essence',1,'Widgets',1))
+		self.passive_actions.append(TradeAction(player, 'Essence',1,'Jewels',1))
+		self.passive_actions.append(TradeAction(player, 'Essence',1,'Gears',1))
+		self.passive_actions.append(TradeAction(player, 'Essence',1,'Widgets',1))

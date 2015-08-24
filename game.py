@@ -1,8 +1,9 @@
 from players import *
 from workers import *
 from buildings import *
-from actions import *
 from machines import *
+from inputs import *
+from actions import *
 
 class Game(object):
 	def __init__(self):
@@ -14,28 +15,21 @@ class Game(object):
 		self.num_players = 0
 		self.players = {}
 		self.buildings = {}
-		self.turn_order = []
 
+		self.turn_order = []
+		self.old_starting_player = ''
+		self.starting_player = ''
 		self.rounds = [i for i in range(self.num_rounds)]
 
 	def create_players(self, players):
 		
-		for name, occupations in players.items():
+		for name, occupation in players.items():
 
 			self.players[name] = Player(name)
 
 			player = self.players[name]
 
-			player.add_starting_occupations(occupations, [self.workers_per_occupation for i in occupations])
-
-			self.check_actions(player)
-
-			# based on the occupations added, get their starting resources
-			for action in player.start_game_actions:
-				action.start(player)
-
-			self.check_actions(player)
-			player.check_workers()
+			player.add_starting_occupations(occupation, [self.workers_per_occupation for i in occupation])
 
 	def create_buildings(self):
 		self.buildings['Bank'] = Bank(self.num_players)
@@ -107,7 +101,12 @@ class Game(object):
 
 
 	def start_game(self, players):
-		print 'Start the game'
+		print '********************************'
+		print '********************************'
+		print 'Start the game!!'
+		print '********************************'
+		print '********************************'
+		print ''
 		self.num_players = len(players)
 
 		self.create_buildings()
@@ -115,9 +114,22 @@ class Game(object):
 		self.create_townhall_cards()
 
 		self.create_players(players)
+
+		# based on the occupations of each player, get their starting resources
+		# probably should refactor this...
+		for name, player in self.players.items():
+			self.check_actions(player)
+			for action in player.start_game_actions:
+				action.execute()
+
 	def start_round(self):
 		# determine starting player and play order using self.turn_order
 		# set up the cards and the machines
+
+		for name, building in self.buildings.items():
+			building.reset_building()
+
+		self.townhall.reset_building()
 
 		# totally rando right now
 		for name, player in self.players.items():
@@ -126,40 +138,48 @@ class Game(object):
 			player.check_workers()
 			player.has_passed = False
 
-		for name, building in self.buildings.items():
-			building.reset_building()
-
+		print '********************************'
 		print 'Start round ' + str(self.round)
+		print '********************************'
+		print ''
+
 
 	def take_turn(self, player):
-		
-		self.check_actions(player)
-		player.list_actions()
-		player.list_available_workers()
+		print '********************************'
+		print '%s\'s turn' % player.name
+		print ''
 
-		choose_action = input('Which action? ') - 1
-		action = player.all_actions[choose_action]
+		turn_taken = False
 
-		choose_worker = input('Worker to place? ')
-		worker = player.available_workers[choose_worker - 1]
+		while not(turn_taken):
+			self.check_actions(player)
+			player.list_actions()
 
-		"""This only works for the placing the dudes. Need a lookup or whatever to get the right inputs for this"""
-		action.place_worker(worker)
+			chosen_action = input('Take which action? ') - 1
+			print ''
+			turn_taken = player.all_actions[chosen_action].execute()
 
 	def end_round(self):
 		# at round end, give each player the resources for unplaced workers
 		# at round end, give the appropriate won auctions to the players
-		# at round end, un-olace each worker
+		# at round end, un-place each worker
 		# at round end, check for game end and do appropriate actions
 		
 		for name, player in self.players.items():
 			player.list_resources()
 
+		print '********************************'
 		print 'End round ' + str(self.round)
+		print '********************************'
+		print ''
 
 	def end_game(self):
 		# count up the power!
+		print '********************************'
+		print '********************************'
 		print 'End the game'
+		print '********************************'
+		print '********************************'
 
 	def run_game(self, players):
 
