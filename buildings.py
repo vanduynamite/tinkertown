@@ -25,6 +25,9 @@ class Building(object):
 			print '%s is full! (from Building class)' % self.name
 			return False
 
+	def reset_building(self):
+		self.open_spots = self.available_spots
+
 class Bank(Building):
 	def __init__(self, players):
 		# Set the name and number of spots by number of players

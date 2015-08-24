@@ -52,6 +52,9 @@ class TownHallAction(Action):
 
 		self.name = 'Go to the %s' % building.name
 		self.starting_player = starting_player
+		
+		"""This doesn't seem to be working right now"""
+
 		if self.starting_player:
 			self.name = self.name + ' and take Starting Player!'
 
@@ -88,6 +91,14 @@ class TownHallAction(Action):
 				print ''
 				return False
 
+class PlayerPass(Action):
+	def __init__(self, player):
+		Action.__init__(self)
+		self.player = player
+		self.name = 'Pass this turn'
+
+	def player_pass(self):
+		self.player.has_passed = True
 
 
 """******************"""
@@ -118,7 +129,7 @@ class TradeAction(Action):
 		# and specify what and how much comes out!
 
 		Action.__init__(self)
-		self.name = '%s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
+		self.name = 'Trade %s %s for %s %s' % (str(resource_in_amt), str(resource_in), str(resource_out_amt), str(resource_out))
 
 		self.resource_in = resource_in
 		self.resource_out = resource_out

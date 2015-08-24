@@ -140,7 +140,7 @@ class Alchemist(Worker):
 		# set the name and all the resource combinations
 		Worker.__init__(self)
 		self.name = 'Alchemist'
-
+		
 		# Starting income. Store it in an action, because everything is an action
 		starting_resources = {
 		'Essence': 2,

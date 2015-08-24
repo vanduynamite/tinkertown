@@ -6,6 +6,7 @@ class Player(object):
 
 		self.name = name
 		self.starting_player = False
+		self.has_passed = False
 
 		self.resources = {
 		'Jewels': 0,
@@ -15,10 +16,13 @@ class Player(object):
 		}
 
 		self.workers = []
+		self.available_workers = []
+
 		self.start_game_actions = []
 		self.place_actions = []
 		self.passive_actions = []
 		self.trigger_actions = []
+		self.all_actions = []
 
 		self.actions = {
 		'Start Game' : self.start_game_actions,
@@ -45,7 +49,22 @@ class Player(object):
 		self.resources[resource] = self.resources[resource] + amount
 
 
+	def reset_workers(self):
+		for worker in self.workers:
+			worker.is_placed = False
 
+	def has_action(self):
+		if len(self.available_workers) == 0 or self.has_passed:
+			return False
+		else:
+			return True
+
+	def check_workers(self):
+		self.available_workers = []
+
+		for worker in self.workers:
+			if not(worker.is_placed):
+				self.available_workers.append(worker)
 
 	def list_resources(self):
 		# simply list the resources for this player
@@ -66,15 +85,23 @@ class Player(object):
 	def list_available_workers(self):
 		# list only the unplaced workers
 		print '%s\'s available workers: ' % self.name
-		
-		i = 0
-		
-		for worker in self.workers:
-			i += 1
-			if not(worker.is_placed):
-				print '    %s - %s' % (str(i), worker.name)
+
+		for i in range(len(self.available_workers)):
+			print '    %s - %s' % (str(i+1), self.available_workers[i].name)
 
 		print ''
+
+	def consolidate_actions(self):
+
+		"""This is a bit bad form. Don't have a good solution right now though"""
+		action_lists_to_add = [self.place_actions, self.passive_actions]
+
+		self.all_actions = []
+
+		for action_list in action_lists_to_add:
+			for action in action_list:
+				self.all_actions.append(action)
+
 
 	def list_actions(self):
 		# list the actions this player has
