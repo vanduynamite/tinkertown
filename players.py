@@ -17,6 +17,7 @@ class Player(object):
 
 		self.workers = []
 		self.available_workers = []
+		self.small_machines = []
 
 		self.start_game_actions = []
 		self.place_actions = []

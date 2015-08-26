@@ -57,6 +57,11 @@ class Game(object):
 			self.supply_machines.append(SmallPowerMachine(self))
 			self.supply_machines.append(SmallPowerMachine(self))
 			self.supply_machines.append(SmallPowerMachine(self))
+			self.supply_machines.append(SmallManualIncomeMachine(self, 'Jewels', 4))
+			self.supply_machines.append(SmallManualIncomeMachine(self, 'Gears', 4))
+			self.supply_machines.append(SmallManualIncomeMachine(self, 'Widgets', 3))
+			self.supply_machines.append(SmallManualIncomeMachine(self, 'Essence', 3))
+			self.supply_machines.append(SmallManualIncomeMachine(self, 'Essence', 3))
 
 
 	def create_townhall_cards(self):
@@ -64,7 +69,6 @@ class Game(object):
 
 	def check_actions(self, player):
 		# this method will be called throughout the game to make sure the player has the correct actions
-
 		player.start_game_actions = []
 		player.place_actions = [PlayerPass(player)]
 		player.passive_actions = []
@@ -102,15 +106,21 @@ class Game(object):
 		for machine in self.sale_machines:
 			player.place_actions.append(BuyMachine(player, machine))
 
-		# and then check the machines
-		"""Not done yet. Machines don't exist yet!"""
+		# and then check the machines this player owns
+		for machine in player.small_machines:
+			for action in machine.place_actions:
+				player.place_actions.append(action)
+
+			for action in machine.trigger_actions:
+				player.trigger_actions.append(action)
+				print action.name
 
 		# AND check the cards this player has
 
+		# and do this stupid thing
 		player.consolidate_actions()
 
 	def check_machines(self):
-		print 'in check_machines'
 		for i in reversed(range(len(self.sale_machines))):
 			if self.sale_machines[i].status != 'sale':
 				self.sale_machines.pop(i)
@@ -128,6 +138,7 @@ class Game(object):
 		return sum([player.has_action() for name, player in self.players.items()])==0
 
 	def execute_triggered_actions(self, trigger):
+
 		for name in self.turn_order:
 			player = self.players[name]
 			self.check_actions(player)
@@ -176,7 +187,8 @@ class Game(object):
 				self.sale_machines[-1].status = 'sale'
 				self.sale_machines[-1].reset_cost()
 
-		# totally rando right now
+		# totally rando right now, and it resets turn_order cause of something else, so this needs to be fixed up
+		self.turn_order = []
 		for name, player in self.players.items():
 			self.turn_order.append(name)
 			player.reset_workers()
@@ -189,7 +201,6 @@ class Game(object):
 		print ''
 
 		self.execute_triggered_actions('start round')
-
 
 
 	def take_turn(self, player):

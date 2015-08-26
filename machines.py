@@ -61,7 +61,7 @@ class SmallIncomeMachine(SmallMachine):
 		SmallMachine.__init__(self, game)
 		self.resource = resource
 		self.qty = qty
-		self.name = '%s %s income' % (qty, resource)
+		self.name = '%s %s AUTO income' % (qty, resource)
 
 	def add_actions(self, player):
 		self.trigger_actions.append(MachineIncome(player, self.resource, self.qty))
@@ -75,4 +75,44 @@ class SmallPowerMachine(SmallMachine):
 		self.name = '%s Power' % self.power
 
 	def add_actions(self, player):
+		self.trigger_actions.append(MachinePower(player, self.power))
+
+class SmallManualMachine(SmallMachine):
+	def __init__(self, game):
+		SmallMachine.__init__(self, game)
+		self.num_workers = 0
+		self.run_cost = {
+		'Widgets' : 1,
+		'Essence' : 0,
+		}
+
+	def calculate_run_cost(self):
+		self.run_cost['Essence'] = self.num_workers
+
+	def negative_run_cost(self):
+		negative_cost = {}
+
+		for resource, qty in self.run_cost.items():
+			negative_cost[resource] = -1*qty
+
+		return negative_cost
+
+	def list_run_cost(self):
+		cost_string = ''
+		for resource, qty in self.run_cost.items():
+			if len(cost_string) != 0:
+				cost_string = cost_string + ' and '
+			cost_string = cost_string + '%s %s' % (qty, resource)
+
+		return cost_string
+
+class SmallManualIncomeMachine(SmallManualMachine):
+	def __init__(self, game, resource, qty):
+		SmallManualMachine.__init__(self, game)
+		self.resource = resource
+		self.qty = qty
+		self.name = '%s %s MANUAL income' %(qty, resource)
+
+	def add_actions(self, player):
+		self.place_actions.append(ManualIncome(player, self, self.resource, self.qty))
 		self.trigger_actions.append(MachinePower(player, self.power))

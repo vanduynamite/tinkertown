@@ -65,7 +65,7 @@ class Financier(Worker):
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
 		# Set the Financier's trade actions
-		self.passive_actions.append(TradeAction(player, 'Jewels',1,'Gears',1))
+		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Gears',1))
 		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Widgets',1))
 		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Essence',1))
 
@@ -103,6 +103,10 @@ class Blacksmith(Worker):
 
 		self.set_building_resources(bank_resources, forge_resoures, workshop_resources)
 
+		self.trigger_actions.append(SmallMachineDiscount(player, 'Gears', 1))
+
+		"""self.trigger_actions.append(LargeMachineDiscount(player, 'Gears', 1))"""
+
 class Engineer(Worker):
 	def __init__(self, player):
 		# set the name and all the resource combinations
@@ -135,6 +139,10 @@ class Engineer(Worker):
 
 		# Set the Engineer's trade actions
 		self.passive_actions.append(TradeAction(player, 'Widgets',1,'Gears',1))
+
+		"""self.trigger_actions.append(RunSmallMachineOnBuy(player))"""
+		"""This will have to reset the cost of running the machine before executing it"""
+		"""self.trigger_actions.append(LoadLargeMachineOnBuy(player))"""
 
 
 class Alchemist(Worker):

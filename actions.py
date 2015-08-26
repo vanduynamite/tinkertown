@@ -123,6 +123,7 @@ class BuyMachine(Action):
 		if has_enough_resources:
 
 			self.machine.purchase(self.player, worker)
+			self.player.small_machines.append(self.machine)
 			worker.is_placed = True
 
 			print '---Action: Buy Small Machine---'
@@ -135,6 +136,46 @@ class BuyMachine(Action):
 			self.player.list_resources()
 			self.machine.reset_cost()
 			return False
+
+class ManualIncome(Action):
+	def __init__(self, player, machine, resource, qty):
+		Action.__init__(self, player)
+		self.machine = machine
+		self.name = 'Run your %s' % machine.name
+		
+		self.income = {
+		resource: qty
+		}
+
+	def execute(self):
+
+		self.machine.calculate_run_cost()
+
+		has_enough_resources = True
+
+		for resource, qty in self.machine.run_cost.items():
+			if self.player.resources[resource] < qty:
+				has_enough_resources = False
+
+		if has_enough_resources:
+
+			worker = get_worker(self.player)
+
+			self.player.add_resources(self.machine.negative_run_cost())
+			self.player.add_resources(self.income)
+			worker.is_placed = True
+
+			print '---Action: Run Small Income Machine---'
+			print '   %s ran a %s Small Machine with a %s' % (self.player.name, self.machine.name, worker.name)
+			print '' 
+			return True
+		else:
+			print '%s does not have enough resources! (needs %s)' % (self.player.name, self.machine.list_run_cost())
+			print ''
+			self.player.list_resources()
+			self.machine.reset_cost()
+			return False
+		
 
 
 class PlayerPass(Action):
@@ -163,10 +204,10 @@ class IncomeAction(Action):
 		resource: qty
 		}
 
-
 	def execute(self):
 		self.player.add_resources(self.income)
-		print '%s got %s %s' % (self.player.name, self.qty, self.resource)
+		for resource, qty in self.income.items():
+			print '%s got %s %s' % (self.player.name, qty, resource)
 
 class MachineIncome(IncomeAction):
 	def __init__(self, player, resource, qty):
