@@ -130,6 +130,22 @@ class IncomeAction(Action):
 	def execute(self):
 		return True
 
+class MachineIncome(Action):
+	def __init__(self, player, resource, qty):
+		Action.__init__(self, player)
+		self.name = 'Income of %s %s' % (qty, resource)
+		self.income = {
+		resource: qty
+		}
+		self.trigger = 'start round'
+
+	def execute(self):
+		self.player.add_resources(self.income)
+
+class MachinePower(MachineIncome):
+	def __init__(self, player, power):
+		MachinePower.__init__(self, player, 'Power', power)
+		self.trigger = 'end game'
 
 
 """******************"""

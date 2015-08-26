@@ -15,6 +15,7 @@ class Game(object):
 		self.num_players = 0
 		self.players = {}
 		self.buildings = {}
+		self.machines = []
 
 		self.turn_order = []
 		self.old_starting_player = ''
@@ -37,8 +38,22 @@ class Game(object):
 		self.buildings['Workshop'] = Workshop(self.num_players)
 		self.townhall = TownHall(self.num_players)
 
-	def create_market(self):
-		pass
+	def create_marketplace(self):
+
+		"""Probably re-do this to make a set number of each machine. For now it's hardcoded cause I'm excited and moving on!! I think fairly easy to build in later"""
+		self.machines.append(SmallIncomeMachine(self, 'Jewels', 3))
+		self.machines.append(SmallIncomeMachine(self, 'Jewels', 3))
+		self.machines.append(SmallIncomeMachine(self, 'Gears', 3))
+		self.machines.append(SmallIncomeMachine(self, 'Gears', 3))
+		self.machines.append(SmallIncomeMachine(self, 'Widgets', 2))
+		self.machines.append(SmallIncomeMachine(self, 'Widgets', 2))
+		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
+		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
+		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
+		self.machines.append(SmallPowerMachine(self))
+		self.machines.append(SmallPowerMachine(self))
+		self.machines.append(SmallPowerMachine(self))
+		self.machines.append(SmallPowerMachine(self))
 
 	def create_townhall_cards(self):
 		pass
@@ -99,6 +114,14 @@ class Game(object):
 	def end_of_round(self):
 		return sum([player.has_action() for name, player in self.players.items()])==0
 
+	def execute_triggered_actions(self, trigger):
+		for name in self.turn_order:
+			player = self.players[name]
+			self.check_actions(player)
+
+			for action in player.trigger_actions:
+				if action.trigger == trigger:
+					action.execute()
 
 	def start_game(self, players):
 		print '********************************'
@@ -110,13 +133,13 @@ class Game(object):
 		self.num_players = len(players)
 
 		self.create_buildings()
-		self.create_market()
+		self.create_marketplace()
 		self.create_townhall_cards()
 
 		self.create_players(players)
 
 		# based on the occupations of each player, get their starting resources
-		# probably should refactor this...
+		"""Need to redo this to go off a start_game trigger"""
 		for name, player in self.players.items():
 			self.check_actions(player)
 			for action in player.start_game_actions:
@@ -143,6 +166,9 @@ class Game(object):
 		print '********************************'
 		print ''
 
+		self.execute_triggered_actions('start round')
+
+
 
 	def take_turn(self, player):
 		print '********************************'
@@ -168,6 +194,8 @@ class Game(object):
 		for name, player in self.players.items():
 			player.list_resources()
 
+		self.execute_triggered_actions('end round')
+
 		print '********************************'
 		print 'End round ' + str(self.round)
 		print '********************************'
@@ -175,6 +203,9 @@ class Game(object):
 
 	def end_game(self):
 		# count up the power!
+
+		self.execute_triggered_actions('end game')
+
 		print '********************************'
 		print '********************************'
 		print 'End the game'
