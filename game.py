@@ -4,6 +4,7 @@ from buildings import *
 from machines import *
 from inputs import *
 from actions import *
+from numpy import *
 
 class Game(object):
 	def __init__(self):
@@ -15,7 +16,8 @@ class Game(object):
 		self.num_players = 0
 		self.players = {}
 		self.buildings = {}
-		self.machines = []
+		self.supply_machines = []
+		self.sale_machines = []
 
 		self.turn_order = []
 		self.old_starting_player = ''
@@ -41,19 +43,21 @@ class Game(object):
 	def create_marketplace(self):
 
 		"""Probably re-do this to make a set number of each machine. For now it's hardcoded cause I'm excited and moving on!! I think fairly easy to build in later"""
-		self.machines.append(SmallIncomeMachine(self, 'Jewels', 3))
-		self.machines.append(SmallIncomeMachine(self, 'Jewels', 3))
-		self.machines.append(SmallIncomeMachine(self, 'Gears', 3))
-		self.machines.append(SmallIncomeMachine(self, 'Gears', 3))
-		self.machines.append(SmallIncomeMachine(self, 'Widgets', 2))
-		self.machines.append(SmallIncomeMachine(self, 'Widgets', 2))
-		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
-		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
-		self.machines.append(SmallIncomeMachine(self, 'Essence', 2))
-		self.machines.append(SmallPowerMachine(self))
-		self.machines.append(SmallPowerMachine(self))
-		self.machines.append(SmallPowerMachine(self))
-		self.machines.append(SmallPowerMachine(self))
+		for i in range(int(self.num_players+1)):
+			self.supply_machines.append(SmallIncomeMachine(self, 'Jewels', 3))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Jewels', 3))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Gears', 3))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Gears', 3))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Widgets', 2))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Widgets', 2))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Essence', 2))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Essence', 2))
+			self.supply_machines.append(SmallIncomeMachine(self, 'Essence', 2))
+			self.supply_machines.append(SmallPowerMachine(self))
+			self.supply_machines.append(SmallPowerMachine(self))
+			self.supply_machines.append(SmallPowerMachine(self))
+			self.supply_machines.append(SmallPowerMachine(self))
+
 
 	def create_townhall_cards(self):
 		pass
@@ -94,6 +98,9 @@ class Game(object):
 		elif self.townhall.is_available():
 			player.place_actions.append(TownHallAction(self.townhall, player, False))
 
+		# and check for machines for sale
+		for machine in self.sale_machines:
+			player.place_actions.append(BuyMachine(player, machine))
 
 		# and then check the machines
 		"""Not done yet. Machines don't exist yet!"""
@@ -101,6 +108,12 @@ class Game(object):
 		# AND check the cards this player has
 
 		player.consolidate_actions()
+
+	def check_machines(self):
+		print 'in check_machines'
+		for i in reversed(range(len(self.sale_machines))):
+			if self.sale_machines[i].status != 'sale':
+				self.sale_machines.pop(i)
 
 	def list_players(self):
 		for player_name in self.players:
@@ -149,10 +162,19 @@ class Game(object):
 		# determine starting player and play order using self.turn_order
 		# set up the cards and the machines
 
+		# reset the building spots
 		for name, building in self.buildings.items():
 			building.reset_building()
 
 		self.townhall.reset_building()
+
+		# get a new set of machines to buy
+		for i in range(self.num_players):
+			for j in range(2):
+				rand_machine = random.randint(len(self.supply_machines))
+				self.sale_machines.append(self.supply_machines.pop(rand_machine))
+				self.sale_machines[-1].status = 'sale'
+				self.sale_machines[-1].reset_cost()
 
 		# totally rando right now
 		for name, player in self.players.items():
@@ -194,6 +216,13 @@ class Game(object):
 		for name, player in self.players.items():
 			player.list_resources()
 
+		# get rid of any unbought machines
+		for machine in self.sale_machines:
+			machine.status = 'gone'
+
+		self.sale_machines = []
+
+		# trigger any end of round actions
 		self.execute_triggered_actions('end round')
 
 		print '********************************'

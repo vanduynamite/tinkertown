@@ -8,7 +8,7 @@ def main():
     'Evan' : [Financier, Alchemist],
     'Lorenzo' : [Blacksmith, Engineer],
     'Roland' : [Financier, Engineer],
-    'Josh' : [Blacksmith, Alchemist],
+    'Josh' : [Blacksmith, Financier],
     }
 
     game.run_game(players)

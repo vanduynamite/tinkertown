@@ -69,6 +69,8 @@ class Financier(Worker):
 		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Widgets',1))
 		self.passive_actions.append(TradeAction(player, 'Jewels',2,'Essence',1))
 
+		self.trigger_actions.append(SmallMachineDiscount(player, 'Jewels', 1))
+
 
 class Blacksmith(Worker):
 	def __init__(self, player):

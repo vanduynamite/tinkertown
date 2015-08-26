@@ -30,7 +30,7 @@ class BuildingAction(Action):
 	def execute(self):
 		#this will look at the building type and add the correct resources to the player, mark the worker as used, and use a building spot
 
-		worker = GetWorker(self.player)
+		worker = get_worker(self.player)
 
 		if worker.is_placed:
 			print 'This %s is already used!' % worker.name
@@ -69,7 +69,7 @@ class TownHallAction(Action):
 	def execute(self):
 		#this will...do nothing now because I haven't set up the town hall
 
-		worker = GetWorker(self.player)
+		worker = get_worker(self.player)
 
 		if worker.is_placed:
 			print 'This %s is already used!' % worker.name
@@ -103,6 +103,40 @@ class TownHallAction(Action):
 				print ''
 				return False
 
+class BuyMachine(Action):
+	def __init__(self, player, machine):
+		Action.__init__(self, player)
+		self.name = 'Buy a %s Small Machine for %s' % (machine.name, machine.list_price())
+		self.machine = machine
+
+	def execute(self):
+
+		worker = get_worker(self.player)
+		self.machine.adjust_cost(worker)
+
+		has_enough_resources = True
+
+		for resource, qty in self.machine.cost.items():
+			if self.player.resources[resource] < qty:
+				has_enough_resources = False
+
+		if has_enough_resources:
+
+			self.machine.purchase(self.player, worker)
+			worker.is_placed = True
+
+			print '---Action: Buy Small Machine---'
+			print '   %s bought a %s Small Machine with a %s for %s' % (self.player.name, self.machine.name, worker.name, self.machine.list_price())
+			print '' 
+			return True
+		else:
+			print '%s does not have enough resources!' % self.player.name
+			print ''
+			self.player.list_resources()
+			self.machine.reset_cost()
+			return False
+
+
 class PlayerPass(Action):
 	def __init__(self, player):
 		Action.__init__(self, player)
@@ -120,32 +154,45 @@ class PlayerPass(Action):
 """Triggered actions"""
 """******************"""
 class IncomeAction(Action):
-	def __init__(self):
-		Action.__init__(self)
-		self.name = 'unknown income action'
-		self.trigger = 'round_start'
-
-		"""Do this one next"""
-
-	def execute(self):
-		return True
-
-class MachineIncome(Action):
 	def __init__(self, player, resource, qty):
 		Action.__init__(self, player)
 		self.name = 'Income of %s %s' % (qty, resource)
+		self.trigger = 'unknown'
+		
 		self.income = {
 		resource: qty
 		}
-		self.trigger = 'start round'
+
 
 	def execute(self):
 		self.player.add_resources(self.income)
+		print '%s got %s %s' % (self.player.name, self.qty, self.resource)
 
-class MachinePower(MachineIncome):
+class MachineIncome(IncomeAction):
+	def __init__(self, player, resource, qty):
+		IncomeAction.__init__(self, player, resource, qty)
+		self.trigger = 'start round'
+
+class MachinePower(IncomeAction):
 	def __init__(self, player, power):
-		MachinePower.__init__(self, player, 'Power', power)
+		IncomeAction.__init__(self, player, 'Power', power)
 		self.trigger = 'end game'
+
+class SmallMachineDiscount(Action):
+	def __init__(self, player, resource, qty):
+		Action.__init__(self, player)
+		self.discount = {
+		resource: qty
+		}
+		self.trigger = 'buy small machine'
+		self.name = 'Discount of %s %s when buying a Small Machine' % (qty, resource)
+
+	def execute(self, cost):
+		for resource, qty in self.discount.items():
+			if cost[resource] >= qty:
+				cost[resource] -= qty
+
+		return cost
 
 
 """******************"""
@@ -181,7 +228,7 @@ class TradeAction(Action):
 		
 		player = self.player
 
-		amount_in = GetTradeAmount(player, self.resource_in)
+		amount_in = get_trade_amount(player, self.resource_in)
 
 		# First check the amount available to make sure they're not asking for too much
 		amount_available = player.resources[self.resource_in]

@@ -1,6 +1,6 @@
 from game import *
 
-def GetWorker(player):
+def get_worker(player):
 	player.list_available_workers()
 	invalid_response = True
 
@@ -18,7 +18,7 @@ def GetWorker(player):
 	print ''
 	return player.available_workers[worker_num]
 
-def GetTradeAmount(player, resource):
+def get_trade_amount(player, resource):
 	player.list_resources()
 	amount_in = input('How many %s would you like to trade in? ' % resource)
 	print ''
