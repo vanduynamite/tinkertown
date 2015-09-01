@@ -147,6 +147,42 @@ class Game(object):
 				if action.trigger == trigger:
 					action.execute()
 
+	def set_turn_order(self):
+
+		if self.starting_player == '':
+			self.starting_player = get_starting_player(self)
+			self.turn_order = [self.starting_player]
+			for i in range(len(self.players)-1):
+				self.turn_order.append(get_next_player(self))
+
+		else:
+
+			for name, player in self.players.items():
+				if player.starting_player and name != self.starting_player:
+					self.starting_player = name
+
+			starting_index = self.turn_order.index(self.starting_player)
+
+			new_turn_order = []
+
+			for i in range(starting_index, len(self.turn_order)):
+				new_turn_order.append(self.turn_order[i])
+
+			for i in range(0, starting_index):
+				new_turn_order.append(self.turn_order[i])
+
+			self.turn_order = new_turn_order
+
+
+		for name, player in self.players.items():
+			if name != self.starting_player:
+				player.starting_player = False
+			else:
+				player.starting_player = True
+
+		print self.turn_order
+
+
 	def start_game(self, players):
 		print '********************************'
 		print '********************************'
@@ -188,9 +224,9 @@ class Game(object):
 				self.sale_machines[-1].reset_cost()
 
 		# totally rando right now, and it resets turn_order cause of something else, so this needs to be fixed up
-		self.turn_order = []
+		self.set_turn_order()
+
 		for name, player in self.players.items():
-			self.turn_order.append(name)
 			player.reset_workers()
 			player.check_workers()
 			player.has_passed = False

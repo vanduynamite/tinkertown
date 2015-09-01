@@ -8,6 +8,9 @@ class Action(object):
 		self.trigger = 'unknown'
 		self.player = player
 
+	def execute(self):
+		print 'unknown action!!!!'
+
 
 
 """******************"""
